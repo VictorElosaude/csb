@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolos Beneficiário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Portal de Protocolos</h1>
+    </header>
+
+    <main>
+        <section id="busca-beneficiario">
+            <h2>Buscar Beneficiário</h2>
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" placeholder="Digite o CPF (somente números)">
+            <button id="buscar-cpf-btn">Buscar</button>
+        </section>
+
+        <section id="dados-beneficiario" style="display: none;">
+            <h2>Dados do Beneficiário</h2>
+            <p><strong>Nome Completo:</strong> <span id="nome-completo"></span></p>
+            <p><strong>Matrícula:</strong> <span id="matricula"></span></p>
+            <p><strong>Nome Social:</strong> <span id="nome-social"></span></p>
+            <p><strong>Data de Nascimento:</strong> <span id="data-nascimento"></span></p>
+        </section>
+
+        <nav id="menu-protocolos" style="display: none;">
+            <h2>Protocolo</h2>
+            <ul>
+                <li><a href="#" data-protocolo="sinais-vitais">SINAIS VITAIS E ANTROPOMÉTRICOS</a></li>
+                <li><a href="#" data-protocolo="condicoes-saude">CONDIÇÕES DE SAÚDE DO BENEFICIÁRIO</a></li>
+                <li><a href="#" data-protocolo="phq2" title="Uma pontuação PHQ-2 varia de 0 a 6. Se a pontuação for 3 ou maior, é provável que haja transtorno depressivo maior. Pacientes com resultado positivo no teste devem ser avaliados posteriormente com o PHQ-9, outros instrumentos de diagnóstico ou entrevista direta para determinar se atendem aos critérios para um transtorno depressivo.">PHQ - 2 Questionário de saúde do paciente (Rastreamento de depressão)</a></li>
+                <li><a href="#" data-protocolo="gad2" title="Descrição do GAD 2 - Transtorno de ansiedade generalizada">GAD 2 - Transtorno de ansiedade generalizada (Rastreamento de ansiedade)</a></li>
+                <li><a href="#" data-protocolo="rastreio">RASTREIO</a></li>
+                <li><a href="#" data-protocolo="resultado-exames">RESULTADO DE EXAMES</a></li>
+                <li><a href="#" data-protocolo="estilo-vida">ESTILO DE VIDA</a></li>
+                <li><a href="#" data-protocolo="avaliacao-final">AVALIAÇÃO FINAL</a></li>
+                <li><a href="#" data-protocolo="status-atendimento">Status do atendimento</a></li>
+            </ul>
+        </nav>
+
+        <section id="questoes-protocolo" style="display: none;">
+            <h2 id="titulo-protocolo"></h2>
+            <div id="descricao-protocolo" style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 4px;"></div>
+            <div id="conteudo-questoes">
+                <!-- As questões do protocolo selecionado aparecerão aqui -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

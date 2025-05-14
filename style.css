@@ -10,14 +10,37 @@ body {
 header {
     background: #333;
     color: #fff;
-    padding: 1rem 0;
+    padding: 1rem 20px;
     text-align: center;
+    /* position: relative; Não é mais necessário para a lupa aqui */
 }
 
 header h1 {
     margin: 0;
     font-size: 2rem;
+    display: inline-block;
 }
+
+/* Estilo antigo da lupa no header removido ou comentado 
+#lupa-container {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+#lupa-container a {
+    color: #fff; 
+    text-decoration: none;
+    display: inline-block;
+}
+
+#lupa-container svg {
+    width: 28px; 
+    height: 28px;
+    vertical-align: middle;
+}
+*/
 
 main {
     padding: 20px;
@@ -29,14 +52,47 @@ main {
 }
 
 section#busca-beneficiario,
-section#dados-beneficiario {
+section#dados-beneficiario,
+section#grupo-familiar,
+section#area-protocolos {
     margin-bottom: 20px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-section h2, nav#menu-protocolos h2 {
+/* Novo container para título da seção e ícone */
+.titulo-secao-com-icone {
+    display: flex;
+    justify-content: space-between; /* Alinha título à esquerda e ícone à direita */
+    align-items: center; /* Alinha verticalmente ao centro */
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 15px; /* Espaço após o título/linha */
+}
+
+.titulo-secao-com-icone h2 {
+    color: #333;
+    margin: 0; /* Remove margem padrão do h2 */
+    border-bottom: none; /* Remove a borda inferior do h2, já que .titulo-secao-com-icone tem */
+    padding-bottom: 0; /* Remove padding inferior do h2 */
+}
+
+#lupa-container-beneficiario a {
+    color: #337ab7; /* Cor do ícone, pode ser ajustada */
+    text-decoration: none;
+    display: inline-block;
+}
+
+#lupa-container-beneficiario svg {
+    width: 22px; /* Tamanho do ícone ajustado */
+    height: 22px;
+    vertical-align: middle;
+}
+
+
+section h2, nav#menu-protocolos h2, section#area-protocolos h2 {
+    /* Estilo geral para outros H2 que não estão no .titulo-secao-com-icone */
     color: #333;
     margin-top: 0;
     border-bottom: 2px solid #333;
@@ -59,7 +115,7 @@ select {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Adicionado para incluir padding e border no width/height total */
+    box-sizing: border-box;
 }
 
 textarea {
@@ -67,7 +123,9 @@ textarea {
 }
 
 button,
-.salvar-protocolo-btn {
+.salvar-protocolo-btn,
+#salvar-dados-global-btn,
+.ver-protocolo-membro {
     display: inline-block;
     background: #5cb85c;
     color: #fff;
@@ -77,15 +135,30 @@ button,
     cursor: pointer;
     font-size: 1rem;
     margin-top: 10px;
+    margin-right: 5px; 
 }
 
 button:hover,
-.salvar-protocolo-btn:hover {
+.salvar-protocolo-btn:hover,
+#salvar-dados-global-btn:hover,
+.ver-protocolo-membro:hover {
     background: #4cae4c;
 }
 
+#voltar-para-principal-btn {
+    background-color: #f0ad4e; 
+}
+#voltar-para-principal-btn:hover {
+    background-color: #ec971f;
+}
+
+
 #dados-beneficiario p {
     margin: 8px 0;
+}
+
+#pesquisa-protocolos-container {
+    margin-bottom: 15px;
 }
 
 nav#menu-protocolos ul {
@@ -94,12 +167,12 @@ nav#menu-protocolos ul {
 }
 
 nav#menu-protocolos ul li {
-    margin-bottom: 0; /* Removido margin-bottom para o acordeão */
+    margin-bottom: 0;
     border: 1px solid #ddd;
-    border-bottom: none; /* Remove borda inferior duplicada */
+    border-bottom: none;
 }
 nav#menu-protocolos ul li:last-child {
-    border-bottom: 1px solid #ddd; /* Adiciona borda inferior ao último item */
+    border-bottom: 1px solid #ddd;
 }
 
 nav#menu-protocolos ul li a {
@@ -119,19 +192,18 @@ nav#menu-protocolos ul li a:hover {
 
 .descricao-protocolo-item {
     padding: 10px 15px;
-    background-color: #f0f8ff; /* AliceBlue para destaque suave */
+    background-color: #f0f8ff;
     border-top: 1px dashed #ccc;
     border-bottom: 1px dashed #ccc;
-    margin: 0; /* Ajustado para ficar dentro do li */
+    margin: 0;
     font-size: 0.9em;
-    color: #4682b4; /* SteelBlue */
+    color: #4682b4;
 }
 
 .protocolo-conteudo {
     padding: 15px;
     background-color: #fff;
     border-top: 1px solid #eee;
-    /* display: none; é controlado por JS */
 }
 
 .protocolo-conteudo h3 {
@@ -165,7 +237,7 @@ nav#menu-protocolos ul li a:hover {
 .radio-option label,
 .checkbox-option label {
     font-weight: normal;
-    display: inline; /* Para alinhar com o input */
+    display: inline;
     color: #444;
 }
 
@@ -189,14 +261,61 @@ nav#menu-protocolos ul li a:hover {
 }
 
 .tabela-questoes td:first-child {
-    font-weight: normal; /* Título da linha da tabela */
+    font-weight: normal;
 }
 
 .tabela-questoes input[type="radio"] {
     display: block;
-    margin: 0 auto; /* Centralizar radio na célula */
+    margin: 0 auto;
 }
 
+#grupo-familiar ul.lista-familiares {
+    list-style: none;
+    padding: 0;
+}
+
+#grupo-familiar ul.lista-familiares li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#grupo-familiar ul.lista-familiares li:last-child {
+    border-bottom: none;
+}
+
+.modal {
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 500px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    margin: 5px;
+}
 
 footer {
     text-align: center;
@@ -206,35 +325,53 @@ footer {
     margin-top: 30px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-    main {
-        padding: 15px;
-    }
-
     header h1 {
         font-size: 1.5rem;
     }
-
+    /* Estilo antigo da lupa no header removido ou comentado
+    #lupa-container {
+        right: 15px; 
+    }
+    #lupa-container svg {
+        width: 24px;
+        height: 24px;
+    }
+    */
+    main {
+        padding: 15px;
+    }
     input[type="text"],
     input[type="date"],
     textarea,
     select {
         width: calc(100% - 20px);
     }
-
     button,
-    .salvar-protocolo-btn {
+    .salvar-protocolo-btn,
+    #salvar-dados-global-btn,
+    .ver-protocolo-membro {
         width: 100%;
         padding: 12px;
+        margin-right: 0; 
+        margin-bottom: 5px; 
     }
-
+    #grupo-familiar ul.lista-familiares li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #grupo-familiar ul.lista-familiares li button {
+        margin-top: 10px;
+    }
     nav#menu-protocolos ul li a {
         font-size: 1rem;
         padding: 10px;
     }
     .protocolo-conteudo {
         padding: 10px;
+    }
+    .modal-content {
+        width: 90%;
     }
 }
 

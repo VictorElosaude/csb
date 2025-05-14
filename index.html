@@ -9,6 +9,7 @@
 <body>
     <header>
         <h1>Portal de Protocolos</h1>
+        <!-- Ícone da lupa foi movido daqui -->
     </header>
 
     <main>
@@ -20,40 +21,57 @@
         </section>
 
         <section id="dados-beneficiario" style="display: none;">
-            <h2>Dados do Beneficiário</h2>
+            <div class="titulo-secao-com-icone">
+                <h2>Dados do Beneficiário</h2>
+                <div id="lupa-container-beneficiario">
+                    <a href="#" id="link-lupa-externa" title="Acessar Exames do Paciente">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </a>
+                </div>
+            </div>
             <p><strong>Nome Completo:</strong> <span id="nome-completo"></span></p>
             <p><strong>Matrícula:</strong> <span id="matricula"></span></p>
             <p><strong>Nome Social:</strong> <span id="nome-social"></span></p>
             <p><strong>Data de Nascimento:</strong> <span id="data-nascimento"></span></p>
+            <p><strong>Plano:</strong> <span id="plano-beneficiario"></span></p>
+            <p><strong title="Nível de Complexidade">NC:</strong> <span id="nc-beneficiario"></span></p>
+            <button id="voltar-para-principal-btn" style="display:none; margin-top: 10px;">Voltar para Beneficiário Principal</button>
         </section>
 
-        <nav id="menu-protocolos" style="display: none;">
-            <h2>Protocolo</h2>
-            <ul>
-                <li><a href="#" data-protocolo="sinais-vitais">SINAIS VITAIS E ANTROPOMÉTRICOS</a></li>
-                <li><a href="#" data-protocolo="condicoes-saude">CONDIÇÕES DE SAÚDE DO BENEFICIÁRIO</a></li>
-                <li><a href="#" data-protocolo="phq2" title="Uma pontuação PHQ-2 varia de 0 a 6. Se a pontuação for 3 ou maior, é provável que haja transtorno depressivo maior. Pacientes com resultado positivo no teste devem ser avaliados posteriormente com o PHQ-9, outros instrumentos de diagnóstico ou entrevista direta para determinar se atendem aos critérios para um transtorno depressivo.">PHQ - 2 Questionário de saúde do paciente (Rastreamento de depressão)</a></li>
-                <li><a href="#" data-protocolo="gad2" title="Descrição do GAD 2 - Transtorno de ansiedade generalizada">GAD 2 - Transtorno de ansiedade generalizada (Rastreamento de ansiedade)</a></li>
-                <li><a href="#" data-protocolo="rastreio">RASTREIO</a></li>
-                <li><a href="#" data-protocolo="resultado-exames">RESULTADO DE EXAMES</a></li>
-                <li><a href="#" data-protocolo="estilo-vida">ESTILO DE VIDA</a></li>
-                <li><a href="#" data-protocolo="avaliacao-final">AVALIAÇÃO FINAL</a></li>
-                <li><a href="#" data-protocolo="status-atendimento">Status do atendimento</a></li>
-            </ul>
-        </nav>
-
-        <section id="questoes-protocolo" style="display: none;">
-            <h2 id="titulo-protocolo"></h2>
-            <div id="descricao-protocolo" style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 4px;"></div>
-            <div id="conteudo-questoes">
-                <!-- As questões do protocolo selecionado aparecerão aqui -->
+        <section id="grupo-familiar" style="display: none;">
+            <h2>Grupo Familiar</h2>
+            <div id="lista-grupo-familiar">
+                <!-- Membros da família serão listados aqui -->
             </div>
         </section>
+
+        <section id="area-protocolos" style="display:none;">
+            <h2>Protocolos</h2>
+            <div id="pesquisa-protocolos-container">
+                <label for="pesquisar-protocolo">Pesquisar Protocolo:</label>
+                <input type="text" id="pesquisar-protocolo" placeholder="Digite para filtrar...">
+            </div>
+            <nav id="menu-protocolos">
+                <ul>
+                </ul>
+            </nav>
+            <button id="salvar-dados-global-btn" style="display: none; margin-top: 20px;">Salvar Dados</button>
+        </section>
+
     </main>
 
     <footer>
         <p>&copy; 2025 - Todos os direitos reservados.</p>
     </footer>
+
+    <div id="modal-salvar" class="modal" style="display:none;">
+        <div class="modal-content">
+            <p>Dados salvos (simulação). Deseja ir para o Grupo Familiar ou Fechar Protocolo?</p>
+            <button id="modal-ir-grupo-familiar">Ir para Grupo Familiar</button>
+            <button id="modal-fechar-protocolo">Fechar Protocolo</button>
+            <button id="modal-cancelar-salvar" style="background-color: #f44336;">Cancelar</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

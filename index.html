@@ -9,7 +9,6 @@
 <body>
     <header>
         <h1>Portal de Protocolos</h1>
-        <!-- Ícone da lupa foi movido daqui -->
     </header>
 
     <main>
@@ -55,8 +54,18 @@
                 <ul>
                 </ul>
             </nav>
-            <button id="salvar-dados-global-btn" style="display: none; margin-top: 20px;">Salvar Dados</button>
         </section>
+
+        <section id="avaliacao-final-secao" class="secao-expansivel" style="display:none;">
+            <h2 class="titulo-expansivel">Avaliação Final <span class="seta-expansivel">&#9660;</span></h2>
+            <div id="conteudo-avaliacao-final" class="conteudo-expansivel" style="display:none;">
+                <!-- As questões da Avaliação Final serão inseridas aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <div id="controles-globais" style="display:none; margin-top: 20px; text-align: center;">
+             <button id="salvar-dados-global-btn">Salvar Dados</button>
+        </div>
 
     </main>
 
@@ -66,9 +75,9 @@
 
     <div id="modal-salvar" class="modal" style="display:none;">
         <div class="modal-content">
-            <p>Dados salvos (simulação). Deseja ir para o Grupo Familiar ou Fechar Protocolo?</p>
+            <p>Dados salvos (simulação). Deseja ir para o Grupo Familiar ou Fechar?</p>
             <button id="modal-ir-grupo-familiar">Ir para Grupo Familiar</button>
-            <button id="modal-fechar-protocolo">Fechar Protocolo</button>
+            <button id="modal-fechar-tela">Fechar</button>
             <button id="modal-cancelar-salvar" style="background-color: #f44336;">Cancelar</button>
         </div>
     </div>
@@ -76,3 +85,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+

@@ -12,7 +12,6 @@ header {
     color: #fff;
     padding: 1rem 20px;
     text-align: center;
-    /* position: relative; Não é mais necessário para a lupa aqui */
 }
 
 header h1 {
@@ -20,27 +19,6 @@ header h1 {
     font-size: 2rem;
     display: inline-block;
 }
-
-/* Estilo antigo da lupa no header removido ou comentado 
-#lupa-container {
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-
-#lupa-container a {
-    color: #fff; 
-    text-decoration: none;
-    display: inline-block;
-}
-
-#lupa-container svg {
-    width: 28px; 
-    height: 28px;
-    vertical-align: middle;
-}
-*/
 
 main {
     padding: 20px;
@@ -54,45 +32,47 @@ main {
 section#busca-beneficiario,
 section#dados-beneficiario,
 section#grupo-familiar,
-section#area-protocolos {
+section#area-protocolos,
+section#avaliacao-final-secao {
     margin-bottom: 20px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-/* Novo container para título da seção e ícone */
+/* Container para título da seção e ícone */
 .titulo-secao-com-icone {
     display: flex;
-    justify-content: space-between; /* Alinha título à esquerda e ícone à direita */
-    align-items: center; /* Alinha verticalmente ao centro */
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 2px solid #333;
     padding-bottom: 10px;
-    margin-bottom: 15px; /* Espaço após o título/linha */
+    margin-bottom: 15px;
 }
 
 .titulo-secao-com-icone h2 {
     color: #333;
-    margin: 0; /* Remove margem padrão do h2 */
-    border-bottom: none; /* Remove a borda inferior do h2, já que .titulo-secao-com-icone tem */
-    padding-bottom: 0; /* Remove padding inferior do h2 */
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 #lupa-container-beneficiario a {
-    color: #337ab7; /* Cor do ícone, pode ser ajustada */
+    color: #337ab7;
     text-decoration: none;
     display: inline-block;
 }
 
 #lupa-container-beneficiario svg {
-    width: 22px; /* Tamanho do ícone ajustado */
+    width: 22px;
     height: 22px;
     vertical-align: middle;
 }
 
-
-section h2, nav#menu-protocolos h2, section#area-protocolos h2 {
-    /* Estilo geral para outros H2 que não estão no .titulo-secao-com-icone */
+section h2, 
+nav#menu-protocolos h2, 
+section#area-protocolos h2,
+section#avaliacao-final-secao h2 {
     color: #333;
     margin-top: 0;
     border-bottom: 2px solid #333;
@@ -120,6 +100,7 @@ select {
 
 textarea {
     min-height: 80px;
+    resize: both; /* Permite redimensionar em ambas as direções */
 }
 
 button,
@@ -151,7 +132,6 @@ button:hover,
 #voltar-para-principal-btn:hover {
     background-color: #ec971f;
 }
-
 
 #dados-beneficiario p {
     margin: 8px 0;
@@ -286,6 +266,45 @@ nav#menu-protocolos ul li a:hover {
     border-bottom: none;
 }
 
+/* Estilo para a seção de Avaliação Final */
+#avaliacao-final-secao {
+    background-color: #fcfcfc;
+    border-left: 4px solid #5cb85c;
+}
+
+#avaliacao-final-secao h2 {
+    color: #5cb85c;
+}
+
+#conteudo-avaliacao-final {
+    padding: 10px 0;
+}
+
+/* Estilo para campos obrigatórios */
+.campo-obrigatorio {
+    border: 1px solid #f0ad4e !important;
+    background-color: #fffbf5 !important;
+}
+
+.campo-obrigatorio::after {
+    content: " *";
+    color: #f0ad4e;
+}
+
+/* Estilo para os controles globais */
+#controles-globais {
+    text-align: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+#salvar-dados-global-btn {
+    font-size: 1.1rem;
+    padding: 12px 25px;
+}
+
 .modal {
     position: fixed; 
     z-index: 1; 
@@ -329,15 +348,6 @@ footer {
     header h1 {
         font-size: 1.5rem;
     }
-    /* Estilo antigo da lupa no header removido ou comentado
-    #lupa-container {
-        right: 15px; 
-    }
-    #lupa-container svg {
-        width: 24px;
-        height: 24px;
-    }
-    */
     main {
         padding: 15px;
     }
@@ -374,4 +384,3 @@ footer {
         width: 90%;
     }
 }
-

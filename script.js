@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM completamente carregado e analisado - v3 Melhorias com Lupa");
+    console.log("DOM completamente carregado e analisado - v10 Ajustes de Texto");
 
     // Elementos da DOM
     const buscarCpfBtn = document.getElementById("buscar-cpf-btn");
@@ -19,43 +19,50 @@ document.addEventListener("DOMContentLoaded", () => {
     const areaProtocolosSection = document.getElementById("area-protocolos");
     const pesquisarProtocoloInput = document.getElementById("pesquisar-protocolo");
     const menuProtocolosUl = document.querySelector("#menu-protocolos ul");
+    
+    const avaliacaoFinalSecao = document.getElementById("avaliacao-final-secao");
+    const tituloAvaliacaoFinal = avaliacaoFinalSecao ? avaliacaoFinalSecao.querySelector(".titulo-expansivel") : null;
+    const conteudoAvaliacaoFinalDiv = document.getElementById("conteudo-avaliacao-final");
+    const setaAvaliacaoFinal = tituloAvaliacaoFinal ? tituloAvaliacaoFinal.querySelector(".seta-expansivel") : null;
+
+    const controlesGlobaisDiv = document.getElementById("controles-globais");
     const salvarDadosGlobalBtn = document.getElementById("salvar-dados-global-btn");
 
     const modalSalvar = document.getElementById("modal-salvar");
     const modalIrGrupoFamiliarBtn = document.getElementById("modal-ir-grupo-familiar");
-    const modalFecharProtocoloBtn = document.getElementById("modal-fechar-protocolo");
+    const modalFecharTelaBtn = document.getElementById("modal-fechar-tela");
     const modalCancelarSalvarBtn = document.getElementById("modal-cancelar-salvar");
 
-    const linkLupaExterna = document.getElementById("link-lupa-externa"); // Novo elemento
+    const linkLupaExterna = document.getElementById("link-lupa-externa");
 
-    let beneficiarioAtual = null; 
-    let membroFamiliaAtual = null; 
-    let protocoloAbertoAtual = null; 
+    let beneficiarioAtual = null;
+    let membroFamiliaAtual = null;
+    let protocoloAbertoAtual = null;
 
     const dadosBeneficiariosCompletos = {
         "12345678900": {
             id: "12345678900",
-            nomeCompleto: "João da Silva Sauro (Principal)",
+            nomeCompleto: "João da Silva Sauro",
             matricula: "9876543",
             nomeSocial: "Jô",
             dataNascimento: "10/05/1985",
-            plano: "Elosau Gold",
-            nc: "", 
+            plano: "Plano Perfil",
+            nc: "",
             grupoFamiliar: [
-                { id: "gf1_1", nomeCompleto: "Fran da Silva Sauro", plano: "Elosau Gold", idade: 32, matricula: "GF001", nomeSocial: "Fran", dataNascimento: "15/03/1992", nc: "" },
-                { id: "gf1_2", nomeCompleto: "Bob da Silva Sauro", plano: "Elosau Kids", idade: 8, matricula: "GF002", nomeSocial: "Bobinho", dataNascimento: "20/10/2015", nc: "" }
+                { id: "gf1_1", nomeCompleto: "Fran da Silva Sauro", plano: "Plano Perfil", idade: 32, matricula: "GF001", nomeSocial: "Fran", dataNascimento: "15/03/1992", nc: "" },
+                { id: "gf1_2", nomeCompleto: "Bob da Silva Sauro", plano: "Plano Perfil", idade: 8, matricula: "GF002", nomeSocial: "Bobinho", dataNascimento: "20/10/2015", nc: "" }
             ]
         },
         "11122233344": {
             id: "11122233344",
-            nomeCompleto: "Maria Oliveira Pterodáctilo (Principal)",
+            nomeCompleto: "Maria Oliveira Pterodáctilo",
             matricula: "1234567",
             nomeSocial: "Mari",
             dataNascimento: "22/08/1990",
-            plano: "Elosau Premium",
+            plano: "Plano Perfil",
             nc: "",
             grupoFamiliar: [
-                { id: "gf2_1", nomeCompleto: "Pedro Oliveira Pterodáctilo", plano: "Elosau Premium", idade: 42, matricula: "GF003", nomeSocial: "Pepe", dataNascimento: "01/01/1982", nc: "" }
+                { id: "gf2_1", nomeCompleto: "Pedro Oliveira Pterodáctilo", plano: "Plano Perfil", idade: 42, matricula: "GF003", nomeSocial: "Pepe", dataNascimento: "01/01/1982", nc: "" }
             ]
         }
     };
@@ -63,25 +70,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const estruturaProtocolos = {
         "sinais-vitais": { titulo: "SINAIS VITAIS E ANTROPOMÉTRICOS", descricao: null, questoes: [{ id: "q7", titulo: "Valor da pressão arterial (ex: 120/080)", tipo: "text", placeholder: "120/080" }, {id: "q12", titulo: "IMC (índice de massa corpórea)", tipo: "radio", opcoes: ["Abaixo do peso", "Eutrófico", "Sobrepeso", "Obesidade grau I", "Obesidade grau II", "Obesidade grau III"]}] },
         "condicoes-saude": { titulo: "CONDIÇÕES DE SAÚDE DO BENEFICIÁRIO", descricao: null, questoes: [{ id: "q14", titulo: "Possui algumas destas condições de saúde?", tipo: "checkbox", opcoes: ["Ansiedade", "Asma"] }] },
-        "phq2": { titulo: "PHQ - 2 Questionário de saúde do paciente", descricao: "Descrição PHQ-2...", questoes: [{id: "q19", titulo: "Pouco interesse ou prazer em fazer as coisas", tipo: "radio", opcoes:["0 Nenhuma vez", "1 Vários dias"]}]},
-        "gad2": { titulo: "GAD 2 - Transtorno de ansiedade generalizada", descricao: "Descrição GAD-2...", questoes: [{id: "q20", titulo: "Sentindo-se nervoso, ansioso ou tenso", tipo: "radio", opcoes:["0 Nenhuma vez", "1 Vários dias"]}]},
+        "phq2": { titulo: "PHQ - 2 Questionário de saúde do paciente", descricao: "Uma pontuação PHQ-2 varia de 0 a 6. Se a pontuação for 3 ou maior, é provável que haja transtorno depressivo maior...", questoes: [{id: "q19", titulo: "Pouco interesse ou prazer em fazer as coisas", tipo: "radio", opcoes:["0 Nenhuma vez", "1 Vários dias", "2 Mais da metade dos dias", "3 Quase todos os dias"]}]},
+        "gad2": { titulo: "GAD 2 - Transtorno de ansiedade generalizada", descricao: "Se o paciente obtiver 3 pontos ou mais no GAD-2, deve-se considerar a possibilidade de transtorno de ansiedade generalizada...", questoes: [{id: "q20", titulo: "Sentindo-se nervoso, ansioso ou tenso", tipo: "radio", opcoes:["0 Nenhuma vez", "1 Vários dias", "2 Mais da metade dos dias", "3 Quase todos os dias"]}]},
         "rastreio": { titulo: "RASTREIO", descricao: null, questoes: [{id: "q21", titulo: "Vacinação Completa?", tipo: "radio", opcoes:["Sim", "Não"]}]},
         "resultado-exames": { titulo: "RESULTADO DE EXAMES", descricao: null, questoes: [{id: "q35", titulo: "LDL", tipo: "text"}]},
-        "estilo-vida": { titulo: "ESTILO DE VIDA", descricao: null, questoes: [{id: "q45", titulo: "Lida bem com estresse?", tipo: "radio", opcoes:["Quase nunca", "Raramente"]}]},
-        "avaliacao-final": {
-            titulo: "AVALIAÇÃO FINAL", descricao: null, 
-            questoes: [
-                { id: "q56", titulo: "Nível de complexidade", tipo: "radio", opcoes: ["Nível 1", "Nível 2", "Nível 3", "Nível 4", "Nível 5"], afetaNC: true },
-                { id: "q58", titulo: "Anotação", tipo: "textarea" }
-            ]
-        },
-        "status-atendimento": { titulo: "Status do atendimento", descricao: null, questoes: [{id: "q63", titulo: "Visita realizada?", tipo: "radio", opcoes:["Sim", "Não"]}]}
+        "estilo-vida": { titulo: "ESTILO DE VIDA", descricao: null, questoes: [{id: "q45", titulo: "Lida bem com estresse?", tipo: "radio", opcoes:["Quase nunca", "Raramente"]}]}
     };
 
-    // Lógica para o ícone de lupa
+    const estruturaAvaliacaoFinal = {
+        questoes: [
+            { id: "af_q1_nivel_complexidade", titulo: "Nível de complexidade", tipo: "radio", opcoes: ["Nível 1", "Nível 2", "Nível 3", "Nível 4", "Nível 5"], afetaNC: true },
+            { id: "af_q2_anotacao", titulo: "Anotação", tipo: "textarea" },
+            { id: "af_q3_visita_realizada", titulo: "Visita realizada?", tipo: "radio", opcoes:["Sim", "Não"]},
+            { 
+                id: "af_q4_pendencias", 
+                titulo: "Houve pendências?", 
+                tipo: "radio", 
+                opcoes:["Sim", "Não"], 
+                controlaProximo: "af_q5_detalhar_pendencias",
+                valorParaExibir: "Sim"
+            },
+            { 
+                id: "af_q5_detalhar_pendencias", 
+                titulo: "Detalhar Pendências", 
+                tipo: "textarea_condicional", 
+                placeholder: "Descreva as pendências...",
+                dependeDe: "af_q4_pendencias",
+                valorParaExibir: "Sim",
+                obrigatorioSeVisivel: true
+            }
+        ]
+    };
+
     if (linkLupaExterna) {
         linkLupaExterna.addEventListener("click", (event) => {
-            event.preventDefault(); // Prevenir comportamento padrão do link se houver href="#"
+            event.preventDefault();
             window.location.href = "https://elosaude.anyconnect.com.br/beneficiario/exames/paciente/22216847968";
         });
     }
@@ -92,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         nomeSocialSpan.textContent = beneficiarioData.nomeSocial || "N/A";
         dataNascimentoSpan.textContent = beneficiarioData.dataNascimento || "N/A";
         planoBeneficiarioSpan.textContent = beneficiarioData.plano || "N/A";
-        ncBeneficiarioSpan.textContent = beneficiarioData.nc || "-"; 
+        ncBeneficiarioSpan.textContent = beneficiarioData.nc || "-";
         dadosBeneficiarioSection.style.display = "block";
     }
 
@@ -103,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ul.className = "lista-familiares";
             grupo.forEach(membro => {
                 const li = document.createElement("li");
-                li.innerHTML = `<strong>${membro.nomeCompleto}</strong> (Plano: ${membro.plano}, Idade: ${membro.idade}) <button class="ver-protocolo-membro" data-membro-id="${membro.id}">Ver Protocolos</button>`;
+                li.innerHTML = `<strong>${membro.nomeCompleto}</strong> (Plano: ${membro.plano}, Idade: ${membro.idade}) <button class="ver-protocolo-membro" data-membro-id="${membro.id}">Ver Conteúdo</button>`;
                 ul.appendChild(li);
             });
             listaGrupoFamiliarDiv.appendChild(ul);
@@ -118,10 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         membroFamiliaAtual = membroId;
                         carregarDadosBeneficiario(membroSelecionado);
                         voltarParaPrincipalBtn.style.display = "inline-block";
-                        grupoFamiliarSection.style.display = "none"; 
+                        grupoFamiliarSection.style.display = "none";
                         areaProtocolosSection.style.display = "block";
-                        salvarDadosGlobalBtn.style.display = "block";
-                        gerarMenuProtocolos(); 
+                        avaliacaoFinalSecao.style.display = "block";
+                        conteudoAvaliacaoFinalDiv.style.display = "none"; // Inicia recolhido
+                        if(setaAvaliacaoFinal) setaAvaliacaoFinal.innerHTML = "&#9660;"; // Seta para baixo
+                        controlesGlobaisDiv.style.display = "block";
+                        gerarMenuProtocolos();
+                        gerarConteudoAvaliacaoFinal();
                     }
                 });
             });
@@ -130,11 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function limparSessaoProtocolos() {
+    function limparSessoesDeConteudo() {
         menuProtocolosUl.innerHTML = "";
+        conteudoAvaliacaoFinalDiv.innerHTML = "";
+        conteudoAvaliacaoFinalDiv.style.display = "none";
+        if(setaAvaliacaoFinal) setaAvaliacaoFinal.innerHTML = "&#9660;";
         protocoloAbertoAtual = null;
-        salvarDadosGlobalBtn.style.display = "none";
         areaProtocolosSection.style.display = "none";
+        avaliacaoFinalSecao.style.display = "none";
+        controlesGlobaisDiv.style.display = "none";
     }
 
     if (buscarCpfBtn) {
@@ -143,18 +174,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const beneficiarioData = dadosBeneficiariosCompletos[cpf];
             if (beneficiarioData) {
                 beneficiarioAtual = cpf;
-                membroFamiliaAtual = null; 
+                membroFamiliaAtual = null;
                 carregarDadosBeneficiario(beneficiarioData);
                 carregarGrupoFamiliar(beneficiarioData.grupoFamiliar);
                 voltarParaPrincipalBtn.style.display = "none";
                 areaProtocolosSection.style.display = "block";
-                salvarDadosGlobalBtn.style.display = "block";
+                avaliacaoFinalSecao.style.display = "block";
+                conteudoAvaliacaoFinalDiv.style.display = "none"; // Inicia recolhido
+                if(setaAvaliacaoFinal) setaAvaliacaoFinal.innerHTML = "&#9660;"; // Seta para baixo
+                controlesGlobaisDiv.style.display = "block";
                 gerarMenuProtocolos();
+                gerarConteudoAvaliacaoFinal();
             } else {
                 alert("CPF não encontrado ou inválido.");
                 dadosBeneficiarioSection.style.display = "none";
                 grupoFamiliarSection.style.display = "none";
-                limparSessaoProtocolos();
+                limparSessoesDeConteudo();
             }
         });
     }
@@ -167,9 +202,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 carregarDadosBeneficiario(beneficiarioData);
                 carregarGrupoFamiliar(beneficiarioData.grupoFamiliar);
                 voltarParaPrincipalBtn.style.display = "none";
-                areaProtocolosSection.style.display = "block"; 
-                salvarDadosGlobalBtn.style.display = "block";
-                gerarMenuProtocolos(); 
+                areaProtocolosSection.style.display = "block";
+                avaliacaoFinalSecao.style.display = "block";
+                conteudoAvaliacaoFinalDiv.style.display = "none"; // Inicia recolhido
+                if(setaAvaliacaoFinal) setaAvaliacaoFinal.innerHTML = "&#9660;"; // Seta para baixo
+                controlesGlobaisDiv.style.display = "block";
+                gerarMenuProtocolos();
+                gerarConteudoAvaliacaoFinal();
+            }
+        });
+    }
+
+    if (tituloAvaliacaoFinal) {
+        tituloAvaliacaoFinal.addEventListener("click", () => {
+            const isVisible = conteudoAvaliacaoFinalDiv.style.display === "block";
+            conteudoAvaliacaoFinalDiv.style.display = isVisible ? "none" : "block";
+            if (setaAvaliacaoFinal) {
+                setaAvaliacaoFinal.innerHTML = isVisible ? "&#9660;" : "&#9650;"; // Alterna seta
             }
         });
     }
@@ -183,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const a = document.createElement("a");
                 a.href = "#";
                 a.dataset.protocolo = protocoloId;
-                a.textContent = protocolo.titulo;
+                a.innerHTML = `${protocolo.titulo} <span class="seta-expansivel-protocolo">&#9660;</span>`; // Adiciona seta
                 if (protocolo.descricao) {
                     a.title = protocolo.descricao;
                 }
@@ -203,18 +252,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     event.preventDefault();
                     const currentDescricaoDiv = divDescricao;
                     const currentConteudoDiv = divConteudo;
+                    const currentSeta = a.querySelector(".seta-expansivel-protocolo");
                     const isVisible = currentConteudoDiv.style.display === "block";
 
+                    // Fecha todos os outros protocolos
                     menuProtocolosUl.querySelectorAll("li").forEach(item => {
                         const desc = item.querySelector(".descricao-protocolo-item");
                         const cont = item.querySelector(".protocolo-conteudo");
+                        const seta = item.querySelector(".seta-expansivel-protocolo");
                         if (desc !== currentDescricaoDiv) desc.style.display = "none";
                         if (cont !== currentConteudoDiv) cont.style.display = "none";
+                        if (seta && seta !== currentSeta) seta.innerHTML = "&#9660;";
                     });
 
                     if (isVisible) {
                         currentDescricaoDiv.style.display = "none";
                         currentConteudoDiv.style.display = "none";
+                        if(currentSeta) currentSeta.innerHTML = "&#9660;";
                         protocoloAbertoAtual = null;
                     } else {
                         if (protocolo.descricao) {
@@ -223,8 +277,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         } else {
                             currentDescricaoDiv.style.display = "none";
                         }
-                        gerarQuestoesHTML(protocolo, currentConteudoDiv);
+                        gerarQuestoesHTML(protocolo.questoes, currentConteudoDiv, false);
                         currentConteudoDiv.style.display = "block";
+                        if(currentSeta) currentSeta.innerHTML = "&#9650;";
                         protocoloAbertoAtual = protocoloId;
                     }
                 });
@@ -232,12 +287,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    function gerarConteudoAvaliacaoFinal(){
+        conteudoAvaliacaoFinalDiv.innerHTML = "";
+        gerarQuestoesHTML(estruturaAvaliacaoFinal.questoes, conteudoAvaliacaoFinalDiv, true);
+    }
     
-    function gerarQuestoesHTML(protocoloData, container) {
-        let htmlQuestoes = ""; 
-        protocoloData.questoes.forEach(q => {
-            htmlQuestoes += `<div class="questao-item">`;
-            htmlQuestoes += `<label for="${q.id}">${q.titulo}</label>`;
+    function gerarQuestoesHTML(questoesArray, container, isAvaliacaoFinal = false) {
+        let htmlQuestoes = "";
+        questoesArray.forEach(q => {
+            const questaoItemId = `questao-item-${q.id}`;
+            htmlQuestoes += `<div class="questao-item" id="${questaoItemId}" ${q.tipo === 'textarea_condicional' ? 'style="display:none;"' : ''}>`;
+            htmlQuestoes += `<label for="${q.id}">${q.titulo} ${q.obrigatorioSeVisivel && q.tipo === 'textarea_condicional' ? '<span class="campo-obrigatorio-asterisco">*</span>' : ''}</label>`;
             switch (q.tipo) {
                 case "text":
                     htmlQuestoes += `<input type="text" id="${q.id}" name="${q.id}" placeholder="${q.placeholder || ''}">`;
@@ -249,31 +310,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 case "radio":
                     q.opcoes.forEach((opt, index) => {
                         const radioId = `${q.id}_${index}`;
-                        htmlQuestoes += `<div class="radio-option"><input type="radio" id="${radioId}" name="${q.id}" value="${opt}" ${q.afetaNC ? 'data-afeta-nc="true"' : ''}><label for="${radioId}">${opt}</label></div>`;
+                        htmlQuestoes += `<div class="radio-option"><input type="radio" id="${radioId}" name="${q.id}" value="${opt}" 
+                                        ${q.afetaNC ? 'data-afeta-nc="true"' : ''}
+                                        ${q.controlaProximo ? `data-controla-proximo="${q.controlaProximo}" data-valor-para-exibir="${q.valorParaExibir}"` : ''}>
+                                     <label for="${radioId}">${opt}</label></div>`;
                     });
                     break;
                 case "checkbox":
-                case "checkbox_outro":
                     q.opcoes.forEach((opt, index) => {
                         const checkId = `${q.id}_${index}`;
-                        htmlQuestoes += `<div class="checkbox-option"><input type="checkbox" id="${checkId}" name="${q.id}[]" value="${opt}"><label for="${checkId}">${opt}</label></div>`;
+                        htmlQuestoes += `<div class="checkbox-option"><input type="checkbox" id="${checkId}" name="${q.id}" value="${opt}"><label for="${checkId}">${opt}</label></div>`;
                     });
-                    if (q.tipo === "checkbox_outro") {
-                         htmlQuestoes += `<div class="checkbox-option"><label for="${q.id}_outro_text">${q.outro_label || 'Outro:'}</label><input type="text" id="${q.id}_outro_text" name="${q.id}_outro_text"></div>`;
-                    }
                     break;
                 case "textarea":
-                    htmlQuestoes += `<textarea id="${q.id}" name="${q.id}" rows="4"></textarea>`;
+                case "textarea_condicional": // Tratar ambos da mesma forma para o HTML inicial
+                    htmlQuestoes += `<textarea id="${q.id}" name="${q.id}" placeholder="${q.placeholder || ''}"></textarea>`;
                     break;
                 case "tabela_radio":
                     htmlQuestoes += `<table class="tabela-questoes"><thead><tr><th></th>`;
-                    q.colunas.forEach(col => htmlQuestoes += `<th>${col}</th>`);
+                    q.opcoes_coluna.forEach(col => htmlQuestoes += `<th>${col}</th>`);
                     htmlQuestoes += `</tr></thead><tbody>`;
-                    q.linhas.forEach((linha, rowIndex) => {
-                        htmlQuestoes += `<tr><td>${linha}</td>`;
-                        q.colunas.forEach((col, colIndex) => {
-                            const radioId = `${q.id}_r${rowIndex}_c${colIndex}`;
-                            htmlQuestoes += `<td><input type="radio" id="${radioId}" name="${q.id}_r${rowIndex}" value="${col}"></td>`;
+                    q.opcoes_linha.forEach((linha, rowIndex) => {
+                        htmlQuestoes += `<tr><td>${linha.titulo}</td>`;
+                        q.opcoes_coluna.forEach((col, colIndex) => {
+                            const radioId = `${q.id}_${rowIndex}_${colIndex}`;
+                            htmlQuestoes += `<td><input type="radio" id="${radioId}" name="${q.id}_${rowIndex}" value="${col}"></td>`;
                         });
                         htmlQuestoes += `</tr>`;
                     });
@@ -284,29 +345,72 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         container.innerHTML = htmlQuestoes;
 
-        if (protocoloData.questoes.some(q => q.afetaNC)) {
-            container.querySelectorAll('input[data-afeta-nc="true"]').forEach(inputNC => {
-                inputNC.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        const valorNC = e.target.value;
-                        ncBeneficiarioSpan.textContent = valorNC;
-                        let pessoaParaAtualizarNC = membroFamiliaAtual ? dadosBeneficiariosCompletos[beneficiarioAtual].grupoFamiliar.find(m => m.id === membroFamiliaAtual) : dadosBeneficiariosCompletos[beneficiarioAtual];
-                        if(pessoaParaAtualizarNC) pessoaParaAtualizarNC.nc = valorNC;
-                    }
+        // Adicionar event listeners para campos que controlam outros ou afetam NC
+        questoesArray.forEach(q => {
+            if (q.controlaProximo) {
+                const radios = container.querySelectorAll(`input[name="${q.id}"]`);
+                radios.forEach(radio => {
+                    radio.addEventListener("change", (event) => {
+                        const campoControlado = container.querySelector(`#questao-item-${q.controlaProximo}`);
+                        const inputControlado = container.querySelector(`#${q.controlaProximo}`);
+                        if (campoControlado) {
+                            if (event.target.value === q.valorParaExibir) {
+                                campoControlado.style.display = "block";
+                                if(inputControlado && q.obrigatorioSeVisivel) inputControlado.required = true;
+                            } else {
+                                campoControlado.style.display = "none";
+                                if(inputControlado) inputControlado.required = false;
+                            }
+                        }
+                    });
                 });
-            });
-        }
+            }
+            if (q.afetaNC) {
+                const radiosNC = container.querySelectorAll(`input[name="${q.id}"]`);
+                radiosNC.forEach(radio => {
+                    radio.addEventListener("change", (event) => {
+                        ncBeneficiarioSpan.textContent = event.target.value || "-";
+                        // Atualizar no objeto de dados também, se necessário para persistência
+                        const cpfBenef = membroFamiliaAtual ? dadosBeneficiariosCompletos[beneficiarioAtual].grupoFamiliar.find(m => m.id === membroFamiliaAtual) : dadosBeneficiariosCompletos[beneficiarioAtual];
+                        if(cpfBenef) cpfBenef.nc = event.target.value;
+                    });
+                });
+            }
+        });
     }
 
     if (pesquisarProtocoloInput) {
-        pesquisarProtocoloInput.addEventListener("keyup", (e) => {
+        pesquisarProtocoloInput.addEventListener("input", (e) => {
             gerarMenuProtocolos(e.target.value);
         });
     }
 
     if (salvarDadosGlobalBtn) {
         salvarDadosGlobalBtn.addEventListener("click", () => {
-            console.log("Dados do protocolo", protocoloAbertoAtual, "seriam salvos aqui.");
+            let camposObrigatoriosPendentes = false;
+            // Validar campos obrigatórios na Avaliação Final, se visível e necessário
+            if (conteudoAvaliacaoFinalDiv.style.display === "block") {
+                estruturaAvaliacaoFinal.questoes.forEach(q => {
+                    if (q.obrigatorioSeVisivel && q.tipo === "textarea_condicional") {
+                        const campoTextarea = conteudoAvaliacaoFinalDiv.querySelector(`#${q.id}`);
+                        const campoControlador = conteudoAvaliacaoFinalDiv.querySelector(`input[name="${q.dependeDe}"]:checked`);
+                        if (campoControlador && campoControlador.value === q.valorParaExibir) {
+                            if (!campoTextarea.value.trim()) {
+                                camposObrigatoriosPendentes = true;
+                                campoTextarea.classList.add("campo-obrigatorio");
+                                alert(`O campo "${q.titulo}" é obrigatório.`);
+                            } else {
+                                campoTextarea.classList.remove("campo-obrigatorio");
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (camposObrigatoriosPendentes) {
+                return; // Interrompe o salvamento se houver pendências
+            }
+
             modalSalvar.style.display = "block";
         });
     }
@@ -314,37 +418,52 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalIrGrupoFamiliarBtn) {
         modalIrGrupoFamiliarBtn.addEventListener("click", () => {
             modalSalvar.style.display = "none";
-            if (beneficiarioAtual) {
-                const beneficiarioData = dadosBeneficiariosCompletos[beneficiarioAtual];
-                carregarGrupoFamiliar(beneficiarioData.grupoFamiliar);
+            if (grupoFamiliarSection.style.display !== 'none') {
                 grupoFamiliarSection.scrollIntoView({ behavior: 'smooth' });
-                limparSessaoProtocolosParcialmente(); 
+            } else if (beneficiarioAtual && dadosBeneficiariosCompletos[beneficiarioAtual].grupoFamiliar.length > 0) {
+                // Se o grupo familiar não estiver visível mas existir, exibe e rola
+                grupoFamiliarSection.style.display = 'block';
+                grupoFamiliarSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            // Se não houver grupo familiar, não faz nada ou poderia dar um feedback
+        });
+    }
+
+    if (modalFecharTelaBtn) {
+        modalFecharTelaBtn.addEventListener("click", () => {
+            modalSalvar.style.display = "none";
+            alert("Salvo com sucesso!"); // Mensagem de feedback
+            // Poderia adicionar lógica para recolher protocolos ou limpar tela, se desejado.
+            if (protocoloAbertoAtual) {
+                const protocoloLi = menuProtocolosUl.querySelector(`a[data-protocolo="${protocoloAbertoAtual}"]`).closest('li');
+                if (protocoloLi) {
+                    protocoloLi.querySelector(".descricao-protocolo-item").style.display = "none";
+                    protocoloLi.querySelector(".protocolo-conteudo").style.display = "none";
+                    const seta = protocoloLi.querySelector(".seta-expansivel-protocolo");
+                    if(seta) seta.innerHTML = "&#9660;";
+                }
+                protocoloAbertoAtual = null;
+            }
+            if (conteudoAvaliacaoFinalDiv.style.display === "block"){
+                conteudoAvaliacaoFinalDiv.style.display = "none";
+                if(setaAvaliacaoFinal) setaAvaliacaoFinal.innerHTML = "&#9660;";
             }
         });
     }
 
-    if (modalFecharProtocoloBtn) {
-        modalFecharProtocoloBtn.addEventListener("click", () => {
-            modalSalvar.style.display = "none";
-            alert("Salvo com sucesso!");
-            limparSessaoProtocolosParcialmente(); 
-        });
-    }
-    if(modalCancelarSalvarBtn) {
+    if (modalCancelarSalvarBtn) {
         modalCancelarSalvarBtn.addEventListener("click", () => {
             modalSalvar.style.display = "none";
         });
     }
 
-    function limparSessaoProtocolosParcialmente(){
-        if(protocoloAbertoAtual){
-            const protocoloLi = menuProtocolosUl.querySelector(`a[data-protocolo="${protocoloAbertoAtual}"]`).closest('li');
-            if(protocoloLi){
-                protocoloLi.querySelector('.protocolo-conteudo').style.display = 'none';
-                protocoloLi.querySelector('.descricao-protocolo-item').style.display = 'none';
-            }
-            protocoloAbertoAtual = null;
+    // Fechar modal clicando fora
+    window.onclick = function(event) {
+        if (event.target == modalSalvar) {
+            modalSalvar.style.display = "none";
         }
     }
 
+    // Inicialização
+    limparSessoesDeConteudo(); // Garante que tudo comece oculto e limpo
 });

@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const a = document.createElement("a");
                 a.href = "#";
                 a.dataset.protocolo = protocoloId;
-                a.innerHTML = `${protocolo.titulo} <span class="seta-expansivel-protocolo">&#9660;</span>`; // Adiciona seta
+                a.innerHTML = `${protocolo.titulo}`;
                 if (protocolo.descricao) {
                     a.title = protocolo.descricao;
                 }
